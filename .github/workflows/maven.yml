@@ -9,8 +9,7 @@
 name: Java CI with Maven
 
 on:
-  push:
-    branches: [ $default-branch ]
+  push
   pull_request:
     branches: [ $default-branch ]
 
