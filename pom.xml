@@ -163,9 +163,9 @@
     <build>
         <extensions>
             <extension>
-                <groupId>org.springframework.build</groupId>
-                <artifactId>aws-maven</artifactId>
-                <version>5.0.0.RELEASE</version>
+                <groupId>com.github.seahen</groupId>
+                <artifactId>maven-s3-wagon</artifactId>
+                <version>1.3.3</version>
             </extension>
         </extensions>
         <plugins>
@@ -206,7 +206,8 @@
                     <preReleaseGoals>compile</preReleaseGoals>
                     <commitMessages>
                         <releaseStartMessage>Update versions for release @{version}</releaseStartMessage>
-                        <releaseFinishMessage>[skip ci] Update for next development version @{version}</releaseFinishMessage>
+                        <releaseFinishMessage>[skip ci] Update for next development version @{version}
+                        </releaseFinishMessage>
                         <releaseVersionUpdateMessage>[skip ci] Update for next development version @{version}
                         </releaseVersionUpdateMessage>
                     </commitMessages>
