@@ -312,16 +312,16 @@
     </build>
 
 
-<!--    <repositories>-->
-<!--        <repository>-->
-<!--            <id>vyne</id>-->
-<!--            <url>https://repo.vyne.co/release</url>-->
-<!--        </repository>-->
-<!--        <repository>-->
-<!--            <id>orbital</id>-->
-<!--            <url>https://repo.orbitalhq.com/release</url>-->
-<!--        </repository>-->
-<!--    </repositories>-->
+    <repositories>
+        <repository>
+            <id>vyne</id>
+            <url>https://repo.vyne.co/release</url>
+        </repository>
+        <repository>
+            <id>orbital</id>
+            <url>https://repo.orbitalhq.com/release</url>
+        </repository>
+    </repositories>
 
 <!--    <distributionManagement>-->
 <!--        <repository>-->
