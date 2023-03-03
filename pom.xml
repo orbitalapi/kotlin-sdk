@@ -340,16 +340,6 @@
         </repository>
     </repositories>
 
-<!--    <distributionManagement>-->
-<!--        <repository>-->
-<!--            <id>repo.orbitalhq.com</id>-->
-<!--            <url>s3://repo.orbitalhq.com/release</url>-->
-<!--        </repository>-->
-<!--        <snapshotRepository>-->
-<!--            <id>repo.orbitalhq.com</id>-->
-<!--            <url>s3://repo.orbitalhq.com/snapshot</url>-->
-<!--        </snapshotRepository>-->
-<!--    </distributionManagement>-->
 
     <distributionManagement>
         <snapshotRepository>
