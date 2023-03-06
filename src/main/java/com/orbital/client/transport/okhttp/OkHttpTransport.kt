@@ -20,7 +20,11 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Sinks
 import java.net.URI
 
-class OkHttpTransport(private val address: String, private val client: OkHttpClient = OkHttpClient()) :
+class OkHttpTransport(
+    private val address: String,
+    private val client: OkHttpClient = OkHttpClient(),
+    private val preferStreaming: Boolean = false
+) :
     OrbitalTransport {
 
     private val uri: URI = URI.create(address)
@@ -32,7 +36,14 @@ class OkHttpTransport(private val address: String, private val client: OkHttpCli
     override fun execute(querySpec: QuerySpec): Publisher<ByteArray> {
         logger.debug { "Query ${querySpec.clientQueryId}: ${querySpec.query}" }
         return when (querySpec.verb) {
-            Verb.FIND -> executeRequestResponseQuery(querySpec)
+            Verb.FIND -> {
+                if (preferStreaming) {
+                    executeStreamingRequest(querySpec)
+                } else {
+                    executeRequestResponseQuery(querySpec)
+                }
+            }
+
             Verb.STREAM -> executeStreamingRequest(querySpec)
         }
 
@@ -163,4 +174,8 @@ private data class WebsocketQuery(
 
 fun http(address: String): OkHttpTransport {
     return OkHttpTransport(address)
+}
+
+fun httpStream(address: String): OkHttpTransport {
+    return OkHttpTransport(address, preferStreaming = true)
 }

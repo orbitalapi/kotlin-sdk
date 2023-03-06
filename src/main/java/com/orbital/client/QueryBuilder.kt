@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import lang.taxi.annotations.DataType
 import lang.taxi.generators.java.DefaultTypeMapper
 import lang.taxi.types.Field
+import mu.KotlinLogging
 import org.reactivestreams.Publisher
 import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.ParameterizedType
@@ -37,9 +38,30 @@ class QueryBuilder<S, T>(
     val targetType: Class<T>,
     val verb: Verb,
     val sourceTypeRef: TypeReference<S>?,
-    val targetTypeReference: TypeReference<T>?
+    val targetTypeReference: TypeReference<T>?,
+    /**
+     * Indicates the trasport should try to stream the results.
+     * Only material if the query is a `find`, as streaming is implied
+     * when running a `stream` query
+     */
+    val useStreamingSemantics: Boolean = false
+
 ) {
     private val typeMapper = DefaultTypeMapper()
+
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
+
+    inline fun <reified D> asStreamOf(): QueryBuilder<S, D> {
+        return QueryBuilder(
+            sourceType = sourceType, targetType = D::class.java, verb = verb,
+            sourceTypeRef,
+            jacksonTypeRef<D>(),
+            useStreamingSemantics = true
+        )
+    }
+
     inline fun <reified D> asA(): QueryBuilder<S, D> {
         return QueryBuilder(
             sourceType = sourceType, targetType = D::class.java, verb = verb,
@@ -56,6 +78,7 @@ class QueryBuilder<S, T>(
     // Let's find out.
     fun sendQuery(transport: OrbitalTransport): Publisher<ByteArray> {
         val taxi = buildTaxiStatement()
+        logger.debug { "Generated query: \n$taxi" }
         val query = QuerySpec(
             taxi,
             verb, targetType
@@ -127,7 +150,7 @@ class QueryBuilder<S, T>(
         // If there's an annotation declaring a type for the result,
         // just use that.
         val (type, isCollection) = resolveCollection(targetTypeReference!!.type)
-        val collectionSuffix = if (isCollection || verb == Verb.STREAM) {
+        val collectionSuffix = if (isCollection || verb == Verb.STREAM || useStreamingSemantics) {
             "[]"
         } else ""
         val targetDataType = typeMapper.getDataTypeAnnotation(type as AnnotatedElement)
